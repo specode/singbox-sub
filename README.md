@@ -13,15 +13,35 @@ configs/8f7f1e6df4b1c8a92a9b31d50f0d7e1a.yaml -> https://你的域名/s/8f7f1e6d
 ## 本地目录
 
 ```text
+templates/
+  mihomo-base.yaml
+scripts/
+  generate_config.py
 configs/
   8f7f1e6df4b1c8a92a9b31d50f0d7e1a.yaml
   51ddaa7d782e46f79c84ab18c920c933.yaml
 ```
 
-生成随机文件名：
+## 生成配置
+
+基础配置在 `templates/mihomo-base.yaml`。默认 Reality 节点、DNS、嗅探、fake-ip 兼容列表、Apple/Microsoft 分组和分流规则都固定在模板里，正常只需要替换 UUID：
 
 ```bash
-openssl rand -hex 32
+python3 scripts/generate_config.py --uuid "<uuid>"
+```
+
+脚本会生成 `configs/<随机串>.yaml`，并输出可访问路径：
+
+```text
+file=configs/<随机串>.yaml
+path=/s/<随机串>
+url=https://sub.specode.work/s/<随机串>
+```
+
+如果要沿用已有订阅 URL，只更新同一个隐藏文件：
+
+```bash
+python3 scripts/generate_config.py --uuid "<uuid>" --token "<已有随机串>" --force
 ```
 
 ## Dokploy 部署
@@ -57,6 +77,7 @@ http://127.0.0.1:8080/s/8f7f1e6df4b1c8a92a9b31d50f0d7e1a
 ## 说明
 
 - 这是纯静态服务，没有 token、转换、校验逻辑。
+- `templates/mihomo-base.yaml` 是基础模板，`configs/` 里的 YAML 是渲染后的最终订阅。
 - `/s/<串>` 会按顺序查找 `<串>.yaml`、`<串>.yml`、`<串>`。
 - 直接访问 `/<文件名>.yaml` 会返回 404，因为配置目录不在 web root 下。
 - 根路径和目录访问都会返回 404。

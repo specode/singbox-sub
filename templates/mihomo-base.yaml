@@ -91,7 +91,7 @@ proxies:
     type: vless
     server: "154.17.234.37"
     port: 8443
-    uuid: "f5f73b3a-1eee-4d90-80ef-8b2ae3535f48"
+    uuid: "__UUID__"
     udp: true
     tls: true
     network: tcp
