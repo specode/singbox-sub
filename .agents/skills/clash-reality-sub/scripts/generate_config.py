@@ -8,6 +8,33 @@ from urllib.parse import urljoin
 
 
 TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{16,128}$")
+DEFAULT_BASE_URL = "https://sub.specode.work"
+
+
+def build_rules(profile):
+    if profile == "global":
+        return """rules:
+  - MATCH,PROXY
+"""
+
+    return """rules:
+  - DOMAIN,localhost,DIRECT
+  - DOMAIN-SUFFIX,local,DIRECT
+  - DOMAIN-SUFFIX,lan,DIRECT
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - GEOSITE,private,DIRECT
+  - GEOSITE,cn,DIRECT
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+  - IP-CIDR6,::1/128,DIRECT,no-resolve
+  - IP-CIDR6,fc00::/7,DIRECT,no-resolve
+  - IP-CIDR6,fe80::/10,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT,no-resolve
+  - MATCH,PROXY
+"""
 
 
 def quote(value):
@@ -17,10 +44,12 @@ def quote(value):
 
 def build_config(args):
     name = args.name
+    rules = build_rules(args.routing_profile)
     return f"""mixed-port: 7890
 allow-lan: false
 mode: rule
 log-level: info
+geodata-loader: memconservative
 
 proxies:
   - name: {quote(name)}
@@ -38,7 +67,7 @@ proxies:
     reality-opts:
       public-key: {quote(args.public_key)}
       short-id: {quote(args.short_id)}
-    encryption: ""
+    encryption: none
 
 proxy-groups:
   - name: PROXY
@@ -47,9 +76,7 @@ proxy-groups:
       - {quote(name)}
       - DIRECT
 
-rules:
-  - MATCH,PROXY
-"""
+{rules}"""
 
 
 def make_token(explicit):
@@ -77,9 +104,15 @@ def main():
     parser.add_argument("--short-id", required=True)
     parser.add_argument("--client-fingerprint", default="chrome")
     parser.add_argument("--name", default="Reality")
+    parser.add_argument(
+        "--routing-profile",
+        choices=("basic", "global"),
+        default="basic",
+        help="basic: private/local/CN direct and everything else through PROXY; global: everything through PROXY",
+    )
     parser.add_argument("--token")
     parser.add_argument("--output-dir", default="configs")
-    parser.add_argument("--base-url")
+    parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     args = parser.parse_args()
 
     if args.port < 1 or args.port > 65535:
