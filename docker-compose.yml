@@ -1,8 +1,0 @@
-services:
-  singbox-sub:
-    build: .
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    volumes:
-      - ./configs:/srv/sub-configs:ro

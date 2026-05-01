@@ -24,18 +24,6 @@ configs/
 openssl rand -hex 32
 ```
 
-## 本地运行
-
-```bash
-docker compose up --build
-```
-
-然后访问：
-
-```text
-http://127.0.0.1:8080/s/8f7f1e6df4b1c8a92a9b31d50f0d7e1a
-```
-
 ## Dokploy 部署
 
 1. 新建应用，选择这个 Git 仓库。
@@ -51,6 +39,19 @@ http://127.0.0.1:8080/s/8f7f1e6df4b1c8a92a9b31d50f0d7e1a
 
 ```text
 https://你的域名/s/8f7f1e6df4b1c8a92a9b31d50f0d7e1a
+```
+
+## 本地运行
+
+```bash
+docker build -t singbox-sub .
+docker run --rm -p 8080:80 singbox-sub
+```
+
+然后访问：
+
+```text
+http://127.0.0.1:8080/s/8f7f1e6df4b1c8a92a9b31d50f0d7e1a
 ```
 
 ## 说明
