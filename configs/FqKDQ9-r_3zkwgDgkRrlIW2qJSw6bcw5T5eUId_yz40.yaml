@@ -1,0 +1,32 @@
+mixed-port: 7890
+allow-lan: false
+mode: rule
+log-level: info
+
+proxies:
+  - name: "Reality-154.17.234.37"
+    type: vless
+    server: "154.17.234.37"
+    port: 8443
+    uuid: "c9d-S2G_iiNIAZ0ip8P1_RIjHbRNZe1jbSUP_DNDUm8"
+    udp: true
+    tls: true
+    network: tcp
+    flow: "xtls-rprx-vision"
+    packet-encoding: xudp
+    servername: "www.cloudflare.com"
+    client-fingerprint: "chrome"
+    reality-opts:
+      public-key: "c9d-S2G_iiNIAZ0ip8P1_RIjHbRNZe1jbSUP_DNDUm8"
+      short-id: "0a79af70ac4f2127"
+    encryption: ""
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies:
+      - "Reality-154.17.234.37"
+      - DIRECT
+
+rules:
+  - MATCH,PROXY

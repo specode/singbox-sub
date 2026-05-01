@@ -1,0 +1,3 @@
+display_name: Clash Reality Sub
+short_description: Generate hidden Clash/Mihomo VLESS Reality subscription files for this static container.
+default_prompt: Generate a hidden Clash/Mihomo VLESS Reality config from the provided node parameters and report the subscription URL.
