@@ -9,6 +9,14 @@ from urllib.parse import urljoin
 
 TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{16,128}$")
 DEFAULT_BASE_URL = "https://sub.specode.work"
+DEFAULT_SERVER = "154.17.234.37"
+DEFAULT_PORT = 8443
+DEFAULT_FLOW = "xtls-rprx-vision"
+DEFAULT_SNI = "www.cloudflare.com"
+DEFAULT_SHORT_ID = "0a79af70ac4f2127"
+DEFAULT_CLIENT_FINGERPRINT = "chrome"
+DEFAULT_PUBLIC_KEY = "jN9SoV2ySHWSZqALxpPfbKjsccEQSoyWKNaUVn2_V3o"
+DEFAULT_NAME = f"Reality-{DEFAULT_SERVER}"
 
 
 def build_rules(profile):
@@ -47,6 +55,7 @@ def build_config(args):
     rules = build_rules(args.routing_profile)
     return f"""mixed-port: 7890
 allow-lan: false
+ipv6: false
 mode: rule
 log-level: info
 geodata-loader: memconservative
@@ -96,14 +105,14 @@ def build_url(base_url, token):
 def main():
     parser = argparse.ArgumentParser(description="Generate a hidden Clash/Mihomo VLESS Reality config.")
     parser.add_argument("--uuid", required=True)
-    parser.add_argument("--public-key", required=True)
-    parser.add_argument("--server", required=True)
-    parser.add_argument("--port", required=True, type=int)
-    parser.add_argument("--flow", default="xtls-rprx-vision")
-    parser.add_argument("--sni", required=True)
-    parser.add_argument("--short-id", required=True)
-    parser.add_argument("--client-fingerprint", default="chrome")
-    parser.add_argument("--name", default="Reality")
+    parser.add_argument("--public-key", default=DEFAULT_PUBLIC_KEY)
+    parser.add_argument("--server", default=DEFAULT_SERVER)
+    parser.add_argument("--port", default=DEFAULT_PORT, type=int)
+    parser.add_argument("--flow", default=DEFAULT_FLOW)
+    parser.add_argument("--sni", default=DEFAULT_SNI)
+    parser.add_argument("--short-id", default=DEFAULT_SHORT_ID)
+    parser.add_argument("--client-fingerprint", default=DEFAULT_CLIENT_FINGERPRINT)
+    parser.add_argument("--name", default=DEFAULT_NAME)
     parser.add_argument(
         "--routing-profile",
         choices=("basic", "global"),

@@ -1,5 +1,6 @@
 mixed-port: 7890
 allow-lan: false
+ipv6: false
 mode: rule
 log-level: info
 geodata-loader: memconservative
@@ -18,7 +19,7 @@ proxies:
     servername: "www.cloudflare.com"
     client-fingerprint: "chrome"
     reality-opts:
-      public-key: "c9d-S2G_iiNIAZ0ip8P1_RIjHbRNZe1jbSUP_DNDUm8"
+      public-key: "jN9SoV2ySHWSZqALxpPfbKjsccEQSoyWKNaUVn2_V3o"
       short-id: "0a79af70ac4f2127"
     encryption: none
 
