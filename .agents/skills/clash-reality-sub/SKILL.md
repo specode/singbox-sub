@@ -11,7 +11,7 @@ Use this skill in the `singbox-sub` repository to create hidden Clash/Mihomo YAM
 
 - Deployment base URL: `https://sub.specode.work`
 - The default VLESS Reality node details are stored in `scripts/generate_config.py`; normally only `--uuid` changes per generated config.
-- Default generated configs include `ipv6: false`.
+- Default generated configs include `ipv6: false` and the repository default DNS block.
 - Generated configs use a lightweight basic split-routing profile by default: private/local/CN traffic is `DIRECT`, and everything else goes through `PROXY`.
 - If the user explicitly wants all traffic through the node, pass `--routing-profile global`.
 

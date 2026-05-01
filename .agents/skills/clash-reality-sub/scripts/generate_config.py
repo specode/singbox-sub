@@ -60,6 +60,20 @@ mode: rule
 log-level: info
 geodata-loader: memconservative
 
+dns:
+  enable: true
+  listen: 0.0.0.0:7874
+  enhanced-mode: fake-ip
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  fallback:
+    - 1.1.1.1
+    - 8.8.8.8
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+
 proxies:
   - name: {quote(name)}
     type: vless
