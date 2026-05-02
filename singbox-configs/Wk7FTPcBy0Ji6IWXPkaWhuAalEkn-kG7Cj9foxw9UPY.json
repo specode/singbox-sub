@@ -1,0 +1,289 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "udp",
+        "tag": "local",
+        "server": "223.5.5.5"
+      },
+      {
+        "type": "udp",
+        "tag": "remote",
+        "server": "1.1.1.1",
+        "detour": "PROXY"
+      },
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      }
+    ],
+    "rules": [
+      {
+        "domain": "localhost",
+        "action": "route",
+        "server": "local"
+      },
+      {
+        "domain_suffix": [
+          "local",
+          "lan",
+          "localdomain",
+          "localhost",
+          "home.arpa",
+          "invalid",
+          "test"
+        ],
+        "action": "route",
+        "server": "local"
+      },
+      {
+        "domain_suffix": [
+          "msftconnecttest.com",
+          "msftncsi.com"
+        ],
+        "action": "route",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "action": "route",
+        "server": "local"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "action": "route",
+        "server": "fakeip"
+      }
+    ],
+    "final": "remote",
+    "strategy": "ipv4_only"
+  },
+  "inbounds": [
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "127.0.0.1",
+      "listen_port": 2080
+    },
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "mtu": 9000,
+      "auto_route": true,
+      "strict_route": true,
+      "stack": "mixed",
+      "platform": {
+        "http_proxy": {
+          "enabled": true,
+          "server": "127.0.0.1",
+          "server_port": 2080
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "PROXY",
+      "outbounds": [
+        "Reality-154.17.234.37",
+        "direct"
+      ],
+      "default": "Reality-154.17.234.37"
+    },
+    {
+      "type": "selector",
+      "tag": "Apple",
+      "outbounds": [
+        "direct",
+        "PROXY"
+      ],
+      "default": "direct"
+    },
+    {
+      "type": "selector",
+      "tag": "Microsoft",
+      "outbounds": [
+        "direct",
+        "PROXY"
+      ],
+      "default": "direct"
+    },
+    {
+      "type": "vless",
+      "tag": "Reality-154.17.234.37",
+      "server": "154.17.234.37",
+      "server_port": 8443,
+      "uuid": "f5f73b3a-1eee-4d90-80ef-8b2ae3535f48",
+      "flow": "xtls-rprx-vision",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "www.cloudflare.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "jN9SoV2ySHWSZqALxpPfbKjsccEQSoyWKNaUVn2_V3o",
+          "short_id": "0a79af70ac4f2127"
+        }
+      },
+      "packet_encoding": "xudp"
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff",
+        "timeout": "1s"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "domain": "localhost",
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "local",
+          "lan"
+        ],
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "ip_cidr": "154.17.234.37/32",
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "aaplimg.com",
+          "apple-cloudkit.com",
+          "apple-dns.net",
+          "apple-mapkit.com",
+          "apple.com",
+          "apple.com.cn",
+          "appstore.com",
+          "cdn-apple.com",
+          "icloud-content.com",
+          "icloud.com",
+          "icloud.com.cn",
+          "itunes.com",
+          "me.com",
+          "mzstatic.com"
+        ],
+        "action": "route",
+        "outbound": "Apple"
+      },
+      {
+        "ip_cidr": "17.0.0.0/8",
+        "action": "route",
+        "outbound": "Apple"
+      },
+      {
+        "domain_suffix": [
+          "aka.ms",
+          "azure.com",
+          "azureedge.net",
+          "bing.com",
+          "bing.net",
+          "live.com",
+          "live.net",
+          "microsoft.com",
+          "microsoftonline.com",
+          "msauth.net",
+          "msftauth.net",
+          "msftconnecttest.com",
+          "msftncsi.com",
+          "msn.com",
+          "office.com",
+          "office.net",
+          "office365.com",
+          "onedrive.com",
+          "outlook.com",
+          "sharepoint.com",
+          "skype.com",
+          "visualstudio.com",
+          "windows.com",
+          "windows.net",
+          "windowsupdate.com"
+        ],
+        "action": "route",
+        "outbound": "Microsoft"
+      },
+      {
+        "domain_suffix": "cn",
+        "action": "route",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn",
+          "geoip-cn"
+        ],
+        "action": "route",
+        "outbound": "direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+        "http_client": {
+          "detour": "PROXY"
+        },
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "http_client": {
+          "detour": "PROXY"
+        },
+        "update_interval": "1d"
+      }
+    ],
+    "final": "PROXY",
+    "auto_detect_interface": true,
+    "default_domain_resolver": "local"
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "store_fakeip": true,
+      "store_dns": true
+    }
+  }
+}
