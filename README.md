@@ -76,6 +76,8 @@ path=/sb/<随机串>
 url=https://sub.specode.work/sb/<随机串>
 ```
 
+sing-box 模板为了兼容 iOS/App Store 图形客户端，DNS 使用 legacy `address` 写法，而不是新版网页文档里的 `dns.servers[].type` 写法。
+
 如果要沿用已有订阅 URL，只更新同一个隐藏文件：
 
 ```bash

@@ -53,4 +53,6 @@ Optional flags:
 - Use JSON config files from `templates/singbox-base.json`.
 - Use `type: vless`, `flow: xtls-rprx-vision`, `packet_encoding: xudp`, and TLS Reality under `tls.reality`.
 - Map SNI to `tls.server_name`, fingerprint to `tls.utls.fingerprint`, public key to `tls.reality.public_key`, and short ID to `tls.reality.short_id`.
-- Newer sing-box removes legacy GeoIP/Geosite config; use remote binary rule-sets under `route.rule_set`.
+- For iOS/App Store graphical client compatibility, keep DNS servers in legacy `address` form instead of the newer `dns.servers[].type` form.
+- Avoid newer-only fields such as `route.default_domain_resolver`, `route.rule_set[].http_client`, `dns.cache_file.store_dns`, and TUN `strict_route` unless the user confirms their client core accepts them.
+- Use remote binary rule-sets under `route.rule_set`; use `download_detour` for compatibility with current graphical clients.

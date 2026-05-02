@@ -6,27 +6,22 @@
   "dns": {
     "servers": [
       {
-        "type": "udp",
         "tag": "local",
-        "server": "223.5.5.5"
+        "address": "223.5.5.5"
       },
       {
-        "type": "udp",
         "tag": "remote",
-        "server": "1.1.1.1",
+        "address": "1.1.1.1",
         "detour": "PROXY"
       },
       {
-        "type": "fakeip",
         "tag": "fakeip",
-        "inet4_range": "198.18.0.0/15",
-        "inet6_range": "fc00::/18"
+        "address": "fakeip"
       }
     ],
     "rules": [
       {
         "domain": "localhost",
-        "action": "route",
         "server": "local"
       },
       {
@@ -39,7 +34,6 @@
           "invalid",
           "test"
         ],
-        "action": "route",
         "server": "local"
       },
       {
@@ -47,12 +41,10 @@
           "msftconnecttest.com",
           "msftncsi.com"
         ],
-        "action": "route",
         "server": "local"
       },
       {
         "rule_set": "geosite-cn",
-        "action": "route",
         "server": "local"
       },
       {
@@ -60,19 +52,25 @@
           "A",
           "AAAA"
         ],
-        "action": "route",
         "server": "fakeip"
       }
     ],
     "final": "remote",
-    "strategy": "ipv4_only"
+    "strategy": "ipv4_only",
+    "fakeip": {
+      "enabled": true,
+      "inet4_range": "198.18.0.0/15",
+      "inet6_range": "fc00::/18"
+    }
   },
   "inbounds": [
     {
       "type": "mixed",
       "tag": "mixed-in",
       "listen": "127.0.0.1",
-      "listen_port": 2080
+      "listen_port": 2080,
+      "sniff": true,
+      "sniff_timeout": "1s"
     },
     {
       "type": "tun",
@@ -83,8 +81,9 @@
       ],
       "mtu": 9000,
       "auto_route": true,
-      "strict_route": true,
       "stack": "mixed",
+      "sniff": true,
+      "sniff_timeout": "1s",
       "platform": {
         "http_proxy": {
           "enabled": true,
@@ -146,6 +145,10 @@
       "packet_encoding": "xudp"
     },
     {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
       "type": "direct",
       "tag": "direct"
     }
@@ -153,16 +156,11 @@
   "route": {
     "rules": [
       {
-        "action": "sniff",
-        "timeout": "1s"
-      },
-      {
         "protocol": "dns",
-        "action": "hijack-dns"
+        "outbound": "dns-out"
       },
       {
         "domain": "localhost",
-        "action": "route",
         "outbound": "direct"
       },
       {
@@ -170,17 +168,14 @@
           "local",
           "lan"
         ],
-        "action": "route",
         "outbound": "direct"
       },
       {
         "ip_cidr": "154.17.234.37/32",
-        "action": "route",
         "outbound": "direct"
       },
       {
         "ip_is_private": true,
-        "action": "route",
         "outbound": "direct"
       },
       {
@@ -200,12 +195,10 @@
           "me.com",
           "mzstatic.com"
         ],
-        "action": "route",
         "outbound": "Apple"
       },
       {
         "ip_cidr": "17.0.0.0/8",
-        "action": "route",
         "outbound": "Apple"
       },
       {
@@ -236,12 +229,10 @@
           "windows.net",
           "windowsupdate.com"
         ],
-        "action": "route",
         "outbound": "Microsoft"
       },
       {
         "domain_suffix": "cn",
-        "action": "route",
         "outbound": "direct"
       },
       {
@@ -249,7 +240,6 @@
           "geosite-cn",
           "geoip-cn"
         ],
-        "action": "route",
         "outbound": "direct"
       }
     ],
@@ -259,9 +249,7 @@
         "tag": "geosite-cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
-        "http_client": {
-          "detour": "PROXY"
-        },
+        "download_detour": "PROXY",
         "update_interval": "1d"
       },
       {
@@ -269,21 +257,17 @@
         "tag": "geoip-cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-        "http_client": {
-          "detour": "PROXY"
-        },
+        "download_detour": "PROXY",
         "update_interval": "1d"
       }
     ],
     "final": "PROXY",
-    "auto_detect_interface": true,
-    "default_domain_resolver": "local"
+    "auto_detect_interface": true
   },
   "experimental": {
     "cache_file": {
       "enabled": true,
-      "store_fakeip": true,
-      "store_dns": true
+      "store_fakeip": true
     }
   }
 }
