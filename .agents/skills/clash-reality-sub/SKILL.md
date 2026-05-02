@@ -55,4 +55,5 @@ Optional flags:
 - Map SNI to `tls.server_name`, fingerprint to `tls.utls.fingerprint`, public key to `tls.reality.public_key`, and short ID to `tls.reality.short_id`.
 - For iOS/App Store graphical client compatibility, keep DNS servers in legacy `address` form instead of the newer `dns.servers[].type` form.
 - Avoid newer-only fields such as `route.default_domain_resolver`, `route.rule_set[].http_client`, `dns.cache_file.store_dns`, and TUN `strict_route` unless the user confirms their client core accepts them.
+- Do not use legacy special DNS outbounds (`type: dns`); use the 1.11-compatible route action `action: hijack-dns`.
 - Use remote binary rule-sets under `route.rule_set`; use `download_detour` for compatibility with current graphical clients.

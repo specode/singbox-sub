@@ -68,9 +68,7 @@
       "type": "mixed",
       "tag": "mixed-in",
       "listen": "127.0.0.1",
-      "listen_port": 2080,
-      "sniff": true,
-      "sniff_timeout": "1s"
+      "listen_port": 2080
     },
     {
       "type": "tun",
@@ -82,8 +80,6 @@
       "mtu": 9000,
       "auto_route": true,
       "stack": "mixed",
-      "sniff": true,
-      "sniff_timeout": "1s",
       "platform": {
         "http_proxy": {
           "enabled": true,
@@ -145,10 +141,6 @@
       "packet_encoding": "xudp"
     },
     {
-      "type": "dns",
-      "tag": "dns-out"
-    },
-    {
       "type": "direct",
       "tag": "direct"
     }
@@ -156,11 +148,16 @@
   "route": {
     "rules": [
       {
+        "action": "sniff",
+        "timeout": "1s"
+      },
+      {
         "protocol": "dns",
-        "outbound": "dns-out"
+        "action": "hijack-dns"
       },
       {
         "domain": "localhost",
+        "action": "route",
         "outbound": "direct"
       },
       {
@@ -168,14 +165,17 @@
           "local",
           "lan"
         ],
+        "action": "route",
         "outbound": "direct"
       },
       {
         "ip_cidr": "154.17.234.37/32",
+        "action": "route",
         "outbound": "direct"
       },
       {
         "ip_is_private": true,
+        "action": "route",
         "outbound": "direct"
       },
       {
@@ -195,10 +195,12 @@
           "me.com",
           "mzstatic.com"
         ],
+        "action": "route",
         "outbound": "Apple"
       },
       {
         "ip_cidr": "17.0.0.0/8",
+        "action": "route",
         "outbound": "Apple"
       },
       {
@@ -229,10 +231,12 @@
           "windows.net",
           "windowsupdate.com"
         ],
+        "action": "route",
         "outbound": "Microsoft"
       },
       {
         "domain_suffix": "cn",
+        "action": "route",
         "outbound": "direct"
       },
       {
@@ -240,6 +244,7 @@
           "geosite-cn",
           "geoip-cn"
         ],
+        "action": "route",
         "outbound": "direct"
       }
     ],
