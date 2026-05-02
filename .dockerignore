@@ -3,3 +3,5 @@
 .agents
 README.md
 *.md
+__pycache__
+*.py[cod]

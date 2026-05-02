@@ -1,3 +1,4 @@
-display_name: Clash Reality Sub
-short_description: Generate hidden Clash/Mihomo VLESS Reality subscription files with lightweight split routing.
-default_prompt: Generate a hidden Clash/Mihomo VLESS Reality config from the provided node parameters, use lightweight basic split routing by default, and report the full https://sub.specode.work subscription URL.
+interface:
+  display_name: "Reality Subscription Pair"
+  short_description: "Generate paired Clash and sing-box subscriptions."
+  default_prompt: "Use $clash-reality-sub to generate paired Clash/Mihomo and sing-box subscription URLs from the provided UUID."
